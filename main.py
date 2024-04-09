@@ -3,7 +3,7 @@ from data import db_session
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'pchela'
+app.config['SECRET_KEY'] = 'vladik'
 
 
 db_session.global_init('db/website.db')
