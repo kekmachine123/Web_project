@@ -15,6 +15,16 @@
         <a class="navbar-brand" href="#">Наше приложение</a>
     </nav>
 </header>
+<nav>
+    {% if current_user.is_authenticated %}
+    <a class="navbar-brand" href="/logout">{{ current_user.name }}</a>
+{% else %}
+    <p>
+        <a class="btn btn-primary " href="/register">Зарегистрироваться</a>
+        <a class="btn btn-success" href="/login">Войти</a>
+    </p>
+{% endif %}
+</nav>
 <main role="main" class="container">
     {% block content %}{% endblock %}
 </main>
