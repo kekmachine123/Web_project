@@ -1,14 +1,20 @@
-from flask import Flask, render_template, redirect, session, make_response
+from flask import Flask, render_template, redirect, session, make_response, request, flash
 from data import db_session
 from data.users import User
 from forms.user import RegisterForm
 from flask_login import LoginManager, login_user, login_required, current_user, logout_user
 from forms.loginform import LoginForm
+import os
+from forms.blog import BlogCreationForm
+from data.news import News
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'vladik'
-app.config['UPLOAD_FOLDER'] = '/images/'
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+UPLOAD_FOLDER = 'images\\'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -18,6 +24,10 @@ login_manager.init_app(app)
 def load_user(user_id):
     db_sess = db_session.create_session()
     return db_sess.query(User).get(user_id)
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -56,6 +66,36 @@ def login():
                                message="Неправильный логин или пароль",
                                form=form)
     return render_template('login.html', title='Авторизация', form=form)
+
+
+@app.route("/create_blog", methods=['GET', 'POST'])
+@login_required
+def create_news():
+    form = BlogCreationForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        if request.method == 'POST':
+            if 'file' not in request.files:
+                flash('No file part')
+                return redirect(request.url)
+            file = request.files['file']
+            if file.filename == '':
+                flash('No selected file')
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                filename = file.filename
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        blog = News(
+            title=form.title.data,
+            text=form.text.data,
+            image=filename,
+            user_id=db_sess.query(User).filter(User.name == current_user.name).first().id
+        )
+        db_sess.add(blog)
+        db_sess.commit()
+
+    return render_template('create_blog.html', title='Создание записи', form=form)
 
 
 @app.route('/logout')
