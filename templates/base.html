@@ -15,6 +15,11 @@
         <a class="navbar-brand" href="#">Наше приложение</a>
     </nav>
 </header>
+<table>
+    <td><p><a href="/news">Новости</a></p></td>
+    <td><p><a href="/blogs">Блоги</a></p></td>
+    <td><p><a href="/forum">Форум</a></p></td>
+</table>
 <nav>
     {% if current_user.is_authenticated %}
     <a class="navbar-brand" href="/logout">{{ current_user.name }}</a>

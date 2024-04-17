@@ -2,12 +2,14 @@ from flask import Flask, render_template, redirect, session, make_response
 from data import db_session
 from data.users import User
 from forms.user import RegisterForm
-from flask_login import LoginManager, login_user, login_required, current_user
+from flask_login import LoginManager, login_user, login_required, current_user, logout_user
 from forms.loginform import LoginForm
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'vladik'
+app.config['UPLOAD_FOLDER'] = '/images/'
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -54,6 +56,13 @@ def login():
                                message="Неправильный логин или пароль",
                                form=form)
     return render_template('login.html', title='Авторизация', form=form)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
 
 
 if __name__ == '__main__':
