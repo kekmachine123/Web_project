@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div>
+    <h3>Центр активности пользователя {{ user.name }}</h3>
+    <h4>Дата регистрации {{ user.created_date }}</h4>
+</div>
+<h5>Последние сообщения на форуме</h5>
+{% for item in last_threads %}
+{% if item.ancestor_thread_id == -10 %}
+<div class="col-md8 border rounded">
+    <table>
+        {% if item.image %}
+            <td>
+                <img height="{{ image_size_scale(item.image)[1] }}px" width="{{ image_size_scale(item.image)[0] }}px" src="{{ url_for('display_image', filename=item.image) }}" align="left">
+            </td>
+        {% endif %}
+        <td>
+            <h5>{{ item.text }}</h5>
+            <div>
+                {% if item.user_id == 0 %}
+                    Анонимная запись, Дата создания: {{ item.created_date }}
+                {% else %}
+                    <a href="/userprofile/{{ item.user.id }}">Автор: {{ item.user.name }}</a>, Дата создания: {{ item.created_date }}
+                {% endif %}
+            </div>
+            <div>
+                Ответов: немало
+            </div>
+            <a href="/forum/{{ item.id }}" class="btn btn-secondary">в ветку!!1</a>
+        </td>
+    </table>
+</div>
+
+{% else %}
+<div class="col-md8 border rounded">
+    <div style="text-size: 10px; color: grey;">Пост №{{ item.id }}</div>
+    {% if item.answer_to %}
+    <div style="text-size: 12px;">
+        Ответ пользователю {{ f(item.answer_to)[1] }} на пост № {{ f(item.answer_to)[2] }}
+        <div style="color: #47913f;">
+        >{{ f(item.answer_to)[0] }}
+        </div>
+    </div>
+    {% endif %}
+
+
+    <table>
+        {% if item.image %}
+            <td>
+                <img height="{{ image_size_scale(item.image)[1] }}px" width="{{ image_size_scale(item.image)[0] }}px" src="{{ url_for('display_image', filename=item.image) }}" align="left">
+            </td>
+        {% endif %}
+        <td>
+            <h5>{{ item.text }}</h5>
+            <div>
+                {% if item.user_id == 0 %}
+                    Анонимная запись, Дата создания: {{ item.created_date }}
+                {% else %}
+                    <a href="/userprofile/{{ item.user.id }}">Автор: {{ item.user.name }}</a>, Дата создания: {{ item.created_date }}
+                {% endif %}
+            </div>
+            {% if current_user.is_authenticated %}
+            <a href="/answer_to/{{ item.ancestor_thread_id }}/{{ item.id }}" class="btn btn-secondary">ответить</a>
+            {% endif %}
+        </td>
+    </table>
+</div>
+
+{% endif %}
+{% endfor %}
+
+<h5>Последние блоги_</h5>
+
+{% for item in last_blogs %}
+<div class="col-md8 border rounded">
+    <table>
+        <td>
+            <h4>{{ item.title }}</h4>
+    <div>
+        <a href="/blogs/{{ item.id }}">Читать полностью</a>
+    </div>
+    <div>
+        Автор: {{ item.user.name }}, Дата создания - {{ item.created_date }}
+    </div>
+    <div>
+        Классов: {{ item.likes }}
+        Дисклассов: {{ item.dislikes }}
+    </div>
+        </td>
+        <td>
+            <img height=280px src="{{ url_for('display_image', filename=item.image) }}" align="left">
+        </td>
+    </table>
+</div>
+{% endfor %}
+
+{% if current_user.id == user.id %}
+<a href="/logout" class="btn btn-warning">Выйти</a>
+{% endif %}
+{% endblock %}

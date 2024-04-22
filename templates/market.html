@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Маркет</h2>
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.cat_choose.label }} <br>
+        {{ form.cat_choose(class="form-control") }} <br>
+    </p>
+    {% for error in form.cat_choose.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    <p>
+        {{ form.submit(type="submit", class="btn btn-primary") }}
+    </p>
+    {% for error in form.submit.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+</form>
+
+<a href="/sell" class="btn btn-primary">Создать обьявление</a>
+  <div class="grid">
+    {% for item in data %}
+      <div>
+          <div>
+              <img height=280px src="{{ url_for('display_image', filename=item.image) }}" align="left">
+          </div>
+          <div>
+              <a href="/market/{{ item.id }}">{{ item.name }}</a>
+          </div>
+          <div>{{ item.money }}</div>
+          <div style="font-size: 8px; font-color: #afb3b0">{{ item.created_date }}</div>
+          <div>
+              {% if item.user.id == current_user.id %}
+                <a href="/delete_from_market/{{ item.id }}" class="btn btn-warning">Убрать обьявление</a>
+              {% endif %}
+          </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

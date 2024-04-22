@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Блоги</h2>
+{% if current_user.is_authenticated %}
+<a class="btn btn-outline-success" href="/create_blog">Сделать запись</a>
+{% endif %}
+{% for item in news %}
+<div class="col-md8 border rounded">
+    <table>
+        <td>
+            <h4>{{ item.title }}</h4>
+    <div>
+        <a href="/blogs/{{ item.id }}">Читать полностью</a>
+    </div>
+    <div>
+        Автор: {{ item.user.name }}, Дата создания - {{ item.created_date }}
+    </div>
+    <div>
+        Классов: {{ item.likes }}
+        Дисклассов: {{ item.dislikes }}
+    </div>
+        </td>
+        <td>
+            <img height=280px src="{{ url_for('display_image', filename=item.image) }}" align="left">
+        </td>
+    </table>
+</div>
+{% endfor %}
+{% endblock %}

@@ -8,8 +8,27 @@
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
           crossorigin="anonymous">
     <title>{{title}}</title>
+    <style>
+
+    body{
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .grid {
+      border: 1px solid black;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .grid > * {
+      background-color: #b6faf3;
+      border-radius: 5px;
+      padding: 7px;
+      margin: 1px;
+    }
+
+   </style>
 </head>
-<body>
+<body style="background-image: 'static/style/background.jpg'">
 <header>
     <nav class="navbar navbar-light bg-light">
         <a class="navbar-brand" href="#">Наше приложение</a>
@@ -19,16 +38,17 @@
     <td><p><a href="/news">Новости</a></p></td>
     <td><p><a href="/blogs">Блоги</a></p></td>
     <td><p><a href="/forum">Форум</a></p></td>
+    <td><p><a href="/market">Маркет</a></p></td>
 </table>
 <nav>
     {% if current_user.is_authenticated %}
-    <a class="navbar-brand" href="/logout">{{ current_user.name }}</a>
-{% else %}
+    <a class="btn btn-outline-dark" href="/userprofile/{{ current_user.id }}">{{ current_user.name }}</a>
+    {% else %}
     <p>
         <a class="btn btn-primary " href="/register">Зарегистрироваться</a>
         <a class="btn btn-success" href="/login">Войти</a>
     </p>
-{% endif %}
+    {% endif %}
 </nav>
 <main role="main" class="container">
     {% block content %}{% endblock %}

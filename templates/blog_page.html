@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>{{content.title}}</h3>
+<img src="{{ url_for('display_image', filename=content.image) }}" alt="Фото записи" style="max-width: 800px;
+                                                                                           max-height: 600px;">
+<div style="font-size: 25px;">
+   {{content.text}}
+</div>
+<br>
+<p><a href="/userprofile/{{ content.user.id }}">Автор:{{ content.user.name }}</a></p>
+<p>Дата создания: {{ content.created_date }}</p>
+{% if current_user.is_authenticated %}
+<p><a href="/like/{{ content.id }}" class="btn btn-outline-success">поставить класс</a>
+   <a class="btn btn-outline-warning" href="/dislike/{{ content.id }}">не понравилось</a></p>
+{% endif %}
+<div class="alert alert-warning">
+   {{message}}
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Форум</h2>
+{% if current_user.is_authenticated %}
+<a class="btn btn-outline-success" href="/create_forum_branch">Создать ветку</a>
+{% endif %}
+<form action="" method="post">
+    {{ theme_choose.hidden_tag() }}
+    <p>
+        {{ theme_choose.theme_choose.label }} <br>
+        {{ theme_choose.theme_choose(class="form-control") }} <br>
+    </p>
+    {% for error in theme_choose.theme_choose.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    <p>
+        {{ theme_choose.submit(type="submit", class="btn btn-primary") }}
+    </p>
+    {% for error in theme_choose.submit.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+</form>
+{% for item in data %}
+<div class="col-md8 border rounded">
+    <table>
+        {% if item.image %}
+            <td>
+                <img height="{{ image_size_scale(item.image)[1] }}px" width="{{ image_size_scale(item.image)[0] }}px" src="{{ url_for('display_image', filename=item.image) }}" align="left">
+            </td>
+        {% endif %}
+        <td>
+            <h5>{{ item.text }}</h5>
+            <div>
+                {% if item.user_id == 0 %}
+                    Анонимная запись, Дата создания: {{ item.created_date }}
+                {% else %}
+                    <a href="/userprofile/{{ item.user.id }}">Автор: {{ item.user.name }}</a>, Дата создания: {{ item.created_date }}
+                {% endif %}
+            </div>
+            <div>
+                {{ answers_counter(item.id)[1] }} ответов: {{ answers_counter(item.id)[0] }}
+            </div>
+            <a href="/forum/{{ item.id }}" class="btn btn-secondary">в ветку!!1</a>
+        </td>
+    </table>
+</div>
+{% endfor %}
+{% endblock %}

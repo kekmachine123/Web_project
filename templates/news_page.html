@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>{{ item["heading"] }}</h3>
+<img src="{{ item['img_src'] }}" alt="Фото новости">
+<div style="font-size: 20px;">
+   {{ item['text'] }}
+</div>
+<br>
+<p><a href="https://www.newsvl.ru/">ИСТОЧНИК: VL.RU</a></p>
+<p>Дата создания: {{ item['date'] }}</p>
+{% endblock %}

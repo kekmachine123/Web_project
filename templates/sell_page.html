@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>{{item.name}}</h3>
+<img src="{{ url_for('display_image', filename=item.image) }}" alt="Фото товара" style="max-width: 800px;
+                                                                                           max-height: 600px;">
+<div style="font-size: 25px;">
+   {{item.description}}
+</div>
+<br>
+<h4>Цена: {{ item.money }}</h4>
+<p>Контакт продавца: {{ item.contact }}</p>
+<p>Адрес продавца: {{ item.address }}</p>
+<p>Дата создания: {{ item.created_date }}</p>
+{% endblock %}

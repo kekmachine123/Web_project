@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="grid">
+    {% for item in data %}
+      <div>
+          <div>
+              <img src="{{ item['img_src'] }}" alt="Картинка">
+          </div>
+          <div>
+              <a href="/news/{{ item['id'] }}">{{ item['heading'] }}</a>
+          </div>
+          <div style="font-size: 8px; font-color: #afb3b0">{{ item['date'] }}</div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}
