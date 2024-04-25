@@ -12,15 +12,17 @@ from data.threads import Threads
 from forms.answer import AnswerForm
 from PIL import Image
 from news_parser import NewsFromInternet
-from flask_restful import reqparse, abort, Api, Resource
-from wtforms import SelectField
 from forms.market import Market, Filter
 from data.sells import Sells
+from flask_restful import reqparse, abort, Api, Resource
+from data import blogs_resourse
 
 
 app = Flask(__name__)
+api = Api(app)
 app.config['SECRET_KEY'] = 'vladik'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+app.config['JSON_AS_ASCII'] = False
 UPLOAD_FOLDER = 'static\\uploads\\'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -358,6 +360,7 @@ def sell_page(sell_id):
 @app.route("/delete_from_market/<sell_id>", methods=['GET', 'POST'])
 def delete_from_market(sell_id):
     item = db_sess.query(Sells).filter(Sells.id == sell_id).first()
+    os.remove(os.path.join(app.config['UPLOAD_FOLDER'], item.image))
     db_sess.delete(item)
     db_sess.commit()
     return redirect("/market")
@@ -380,6 +383,8 @@ if __name__ == '__main__':
     db_sess = db_session.create_session()
     nws = NewsFromInternet()
     today_news = nws.get_vl_ru_news()
+    api.add_resource(blogs_resourse.BlogsResource, '/api/blogs/<int:blog_id>')
+    api.add_resource(blogs_resourse.BlogsListResource, '/api/blogs')
     app.run()
 
 
