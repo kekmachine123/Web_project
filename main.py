@@ -24,7 +24,7 @@ app.config['SECRET_KEY'] = 'vladik'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.config['JSON_AS_ASCII'] = False
 UPLOAD_FOLDER = 'static\\uploads\\'
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 nws = NewsFromInternet()
 today_news = nws.get_vl_ru_news()
@@ -39,12 +39,15 @@ def load_user(user_id):
 
 
 def image_size_scale(filename):
-    im = Image.open("static/uploads/" + filename)
-    (width, height) = im.size
-    d = (width ** 2 + height ** 2) ** 0.5
-    h = str(int(height * (500 / d)))
-    w = str(int(width * (500 / d)))
-    return (w, h)
+    try:
+        im = Image.open("static/uploads/" + filename)
+        (width, height) = im.size
+        d = (width ** 2 + height ** 2) ** 0.5
+        h = str(int(height * (500 / d)))
+        w = str(int(width * (500 / d)))
+        return (w, h)
+    except Exception:
+        return 250, 300
 
 
 app.jinja_env.globals.update(image_size_scale=image_size_scale)
@@ -380,6 +383,7 @@ if __name__ == '__main__':
     api.add_resource(forum_resource.ForumResource, '/api/forum/<int:thread_id>/<int:secret_key>')
     api.add_resource(forum_resource.ForumListResource, '/api/forum/<int:secret_key>')
     api.add_resource(news_resourse.NewsResource, '/api/news')
-    app.run()
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
 
 
