@@ -15,7 +15,7 @@ from news_parser import NewsFromInternet
 from forms.market import Market, Filter
 from data.sells import Sells
 from flask_restful import reqparse, abort, Api, Resource
-from data import blogs_resourse
+from data import blogs_resourse, sells_resource
 
 
 app = Flask(__name__)
@@ -55,8 +55,8 @@ def allowed_file(filename):
 def f(answer_to):
     q = db_sess.query(Threads).filter(Threads.id == answer_to).first()
     if q.user_id == 0:
-        return (q.text, "Аноним", q.id)
-    return (q.text, q.user.name, q.id)
+        return q.text, "Аноним", q.id
+    return q.text, q.user.name, q.id
 
 
 app.jinja_env.globals.update(f=f)
@@ -383,8 +383,10 @@ if __name__ == '__main__':
     db_sess = db_session.create_session()
     nws = NewsFromInternet()
     today_news = nws.get_vl_ru_news()
-    api.add_resource(blogs_resourse.BlogsResource, '/api/blogs/<int:blog_id>')
-    api.add_resource(blogs_resourse.BlogsListResource, '/api/blogs')
+    api.add_resource(blogs_resourse.BlogsResource, '/api/blogs/<int:blog_id>/<int:secret_key>')
+    api.add_resource(blogs_resourse.BlogsListResource, '/api/blogs/<int:secret_key>')
+    api.add_resource(sells_resource.SellsResource, '/api/market/<int:sell_id>/<int:secret_key>')
+    api.add_resource(sells_resource.SellsListResource, '/api/market/<int:secret_key>')
     app.run()
 
 
