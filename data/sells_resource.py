@@ -79,7 +79,7 @@ class SellsListResource(Resource):
         if not all_sells:
             return {'error': 'No sells published'}
         db_sess.close()
-        return {'sells': [sell.to_dict(only=('name', 'description', 'created_date', 'user_id', 'address',
+        return {'sells': [sell.to_dict(only=('id', 'name', 'description', 'created_date', 'user_id', 'address',
                                               'category', 'money', 'contact'))
                           for sell in all_sells]}
 

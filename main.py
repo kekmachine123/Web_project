@@ -15,7 +15,7 @@ from news_parser import NewsFromInternet
 from forms.market import Market, Filter
 from data.sells import Sells
 from flask_restful import reqparse, abort, Api, Resource
-from data import blogs_resourse, sells_resource
+from data import blogs_resourse, sells_resource, forum_resource, news_resourse
 
 
 app = Flask(__name__)
@@ -26,6 +26,8 @@ app.config['JSON_AS_ASCII'] = False
 UPLOAD_FOLDER = 'static\\uploads\\'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+nws = NewsFromInternet()
+today_news = nws.get_vl_ru_news()
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -60,16 +62,6 @@ def f(answer_to):
 
 
 app.jinja_env.globals.update(f=f)
-
-
-def forforum(meow):
-    q = list(db_sess.query(Threads).filter(Threads.id == meow).all())
-    d = {}
-    while q:
-        thr = q.pop(0)
-        c = forforum(thr.id)
-        d[thr.id] = c
-    return d
 
 
 def answers_counter(id):
@@ -381,12 +373,13 @@ def display_image(filename):
 if __name__ == '__main__':
     db_session.global_init('db/website.db')
     db_sess = db_session.create_session()
-    nws = NewsFromInternet()
-    today_news = nws.get_vl_ru_news()
     api.add_resource(blogs_resourse.BlogsResource, '/api/blogs/<int:blog_id>/<int:secret_key>')
     api.add_resource(blogs_resourse.BlogsListResource, '/api/blogs/<int:secret_key>')
     api.add_resource(sells_resource.SellsResource, '/api/market/<int:sell_id>/<int:secret_key>')
     api.add_resource(sells_resource.SellsListResource, '/api/market/<int:secret_key>')
+    api.add_resource(forum_resource.ForumResource, '/api/forum/<int:thread_id>/<int:secret_key>')
+    api.add_resource(forum_resource.ForumListResource, '/api/forum/<int:secret_key>')
+    api.add_resource(news_resourse.NewsResource, '/api/news')
     app.run()
 
 

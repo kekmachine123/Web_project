@@ -71,7 +71,7 @@ class BlogsListResource(Resource):
         if not all_blogs:
             return {'error': 'No blogs published'}
         db_sess.close()
-        return {'blogs': [blog.to_dict(only=('title', 'text', 'image', 'likes', 'dislikes', 'user_id'))
+        return {'blogs': [blog.to_dict(only=('id', 'title', 'text', 'image', 'likes', 'dislikes', 'user_id'))
                           for blog in all_blogs]}
 
     def post(self, secret_key):

@@ -1,0 +1,8 @@
+SQLAlchemy==2.0.28
+Werkzeug==3.0.1
+Flask==3.0.2
+WTForms==3.1.2
+pillow==10.2.0
+requests==2.31.0
+bs4==0.0.2
+beautifulsoup4==4.12.3
